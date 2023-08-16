@@ -72,7 +72,7 @@ app.get("/profile", async (req, res) => {
     try {
       const userData = jwt.verify(token, jwtSecret);
       const user = await User.findById(userData.id);
-      // console.log(user.id);
+      console.log(user.id);
       if (user) {
         const { name, email, _id } = user;
         res.json({ name, email, _id });
@@ -85,6 +85,14 @@ app.get("/profile", async (req, res) => {
   } else {
     res.json("No user token found");
   }
+});
+
+// app.get("/account", (req, res) => {
+//   res.json("account page for the user!");
+// });
+
+app.post("/logout", (req, res) => {
+  res.cookie("token", "").json(true);
 });
 
 const port = 4000;
