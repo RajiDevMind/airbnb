@@ -5,6 +5,7 @@ const app = express();
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
+const imageDownloader = require("image-downloader");
 
 const connectDB = require("./models/connectDB");
 const User = require("./models/Users");
@@ -13,6 +14,8 @@ const User = require("./models/Users");
 const bcryptSalt = bcrypt.genSaltSync(12);
 const jwtSecret = "dfg3rtegd3456uyjh";
 
+// middleware to display photos in the browser
+app.use("/uploads", express.static(__dirname + "/uploads"));
 // middleware to convert users data to json format
 app.use(express.json());
 // middleware to assigned cookie
@@ -86,10 +89,6 @@ app.get("/profile", async (req, res) => {
     res.json("No user token found");
   }
 });
-
-// app.get("/account", (req, res) => {
-//   res.json("account page for the user!");
-// });
 
 app.post("/logout", (req, res) => {
   res.cookie("token", "").json(true);

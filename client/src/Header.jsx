@@ -77,6 +77,7 @@ const Header = () => {
           {!!user && <div>{user.name}</div>}
         </Link>
       </header>
+      <hr className="mt-2" />
     </div>
   );
 };
