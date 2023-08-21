@@ -5,7 +5,10 @@ const app = express();
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
+const fs = require("fs");
 const imageDownloader = require("image-downloader");
+const multer = require("multer");
+const photosMiddlewarMulter = multer({ dest: "uploads/" });
 
 const connectDB = require("./models/connectDB");
 const User = require("./models/Users");
@@ -92,6 +95,39 @@ app.get("/profile", async (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.cookie("token", "").json(true);
+});
+
+// console.log({ __dirname });
+app.post("/upload-by-link", async (req, res) => {
+  try {
+    const { link } = req.body;
+    const newName = "photo" + Date.now() + ".jpg";
+    await imageDownloader.image({
+      url: link,
+      dest: __dirname + "/uploads/" + newName,
+    });
+    res.json(newName);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.post("/upload", photosMiddlewarMulter.array("photos", 100), (req, res) => {
+  try {
+    const uploadedFiles = [];
+    for (let i = 0; i < req.files.length; i++) {
+      const { path, originalname } = req.files[i];
+      const parts = originalname.split(".");
+      const ext = parts[parts.length - 1];
+      const newPath = path + "." + ext;
+      fs.renameSync(path, newPath);
+      uploadedFiles.push(newPath.replace("uploads\\", ""));
+    }
+
+    res.json(uploadedFiles);
+  } catch (err) {
+    console.log("Error in file upload. Try again!!!");
+  }
 });
 
 const port = 4000;
