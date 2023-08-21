@@ -22,6 +22,7 @@ const LoginPage = () => {
         setUser(response.data);
         alert("Login Successful!");
         setRedirect(true);
+        // JSON.parse(localStorage.setItem(email, password));
       } else {
         alert("loggedin failed!");
       }

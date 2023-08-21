@@ -1,13 +1,15 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../UserContext";
-
+import axios from "axios";
 const ProfilePage = () => {
+  const [redirect, setRedirect] = useState(false);
   const { user, setUser } = useContext(UserContext);
 
   async function logout() {
     await axios.post("/logout");
     setRedirect("/");
     setUser(null);
+    // localStorage.removeItem(user.email, user.password);
   }
 
   return (

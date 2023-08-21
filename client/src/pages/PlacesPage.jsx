@@ -42,19 +42,28 @@ const PlacesPage = () => {
     setLinkPhoto("");
   };
 
-  const uploadPhoto = (e) => {
+  const uploadPhoto = async (e) => {
     const file = e.target.files;
+    console.log(file);
     const data = new FormData();
-    data.set("photos", file);
-    axios
-      .post("/uploads", data, {
-        headers: { "Content-type": "multipart/form-data" },
-      })
-      .then((resp) => {
-        const data = resp;
-        console.log(data);
+    for (let i = 0; i < file.length; i++) {
+      data.append("photos", file[i]);
+    }
+    const response = await axios.post("/upload", data, {
+      headers: { "Content-type": "multipart/form-data" },
+    });
+    if (response) {
+      const filenames = response.data;
+      setPhoto((prev) => {
+        return [...prev, ...filenames];
       });
-    console.log({ file });
+    }
+    // .then((response) => {
+    //   const { files: filenames } = response;
+    //   setPhoto((prev) => {
+    //     return [...prev, ...filenames];
+    //   });
+    // });
   };
 
   return (
@@ -126,16 +135,21 @@ const PlacesPage = () => {
           <div className=" mt-2 gap-2 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {photos.length > 0 &&
               photos.map((link) => (
-                <div key={link.id}>
+                <div children="h-32 flex" key={link.size}>
                   <img
-                    className="rounded-2xl"
+                    className="rounded-2xl w-full object-cover position-center"
                     src={"http://localhost:4000/uploads/" + link}
                     alt=""
                   />
                 </div>
               ))}
-            <label className="cursor-pointer flex items-center gap-1 border bg-transparent rounded-2xl p-8 text-2xl text-gray-600">
-              <input type="file" className="hidden" onChange={uploadPhoto} />
+            <label className=" h-32 cursor-pointer flex items-center gap-1 border bg-transparent rounded-2xl p-8 text-2xl text-gray-600">
+              <input
+                type="file"
+                multiple
+                className="hidden"
+                onChange={uploadPhoto}
+              />
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
