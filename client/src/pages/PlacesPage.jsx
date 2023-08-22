@@ -3,12 +3,13 @@ import { Link, useParams } from "react-router-dom";
 import PerksComp from "./PerksComp";
 import axios from "axios";
 
+import PhotosUploader from "../PhotosUploader";
+
 const PlacesPage = () => {
   const { action } = useParams();
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
-  const [photos, setPhoto] = useState([]);
-  const [linkPhoto, setLinkPhoto] = useState("");
+
   const [desc, setDesc] = useState("");
   const [perks, setPerks] = useState([]);
   const [extraInfo, setExtraInfo] = useState("");
@@ -31,41 +32,22 @@ const PlacesPage = () => {
     );
   };
 
-  const addPhotoByLink = async (e) => {
+  const addNewPlace = async (e) => {
     e.preventDefault();
-    const { data: filename } = await axios.post("/upload-by-link", {
-      link: linkPhoto,
+    const { data } = await axios.post("/places", {
+      title,
+      address,
+      photos,
+      linkPhoto,
+      desc,
+      perks,
+      extraInfo,
+      checkIn,
+      checkOut,
+      maxGuests,
     });
-    setPhoto((prev) => {
-      return [...prev, filename];
-    });
-    setLinkPhoto("");
+    console.log(data);
   };
-
-  const uploadPhoto = async (e) => {
-    const file = e.target.files;
-    console.log(file);
-    const data = new FormData();
-    for (let i = 0; i < file.length; i++) {
-      data.append("photos", file[i]);
-    }
-    const response = await axios.post("/upload", data, {
-      headers: { "Content-type": "multipart/form-data" },
-    });
-    if (response) {
-      const filenames = response.data;
-      setPhoto((prev) => {
-        return [...prev, ...filenames];
-      });
-    }
-    // .then((response) => {
-    //   const { files: filenames } = response;
-    //   setPhoto((prev) => {
-    //     return [...prev, ...filenames];
-    //   });
-    // });
-  };
-
   return (
     <>
       {action !== "new" && (
@@ -93,7 +75,7 @@ const PlacesPage = () => {
         </div>
       )}
       {action === "new" && (
-        <form>
+        <form onSubmit={addNewPlace}>
           {preInput(
             "Title",
             "Title for your place, should be short and catchy for advertisement"
@@ -115,58 +97,8 @@ const PlacesPage = () => {
               setAddress(e.target.value);
             }}
           />
-          {preInput("Photos", "Descriptive images for your place")}
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder={"Add using link ....jpg"}
-              value={linkPhoto}
-              onChange={(e) => {
-                setLinkPhoto(e.target.value);
-              }}
-            />
-            <button
-              onClick={addPhotoByLink}
-              className="rounded-2xl bg-gray-200 px-4"
-            >
-              Add&nbsp;photos
-            </button>
-          </div>
-          <div className=" mt-2 gap-2 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {photos.length > 0 &&
-              photos.map((link) => (
-                <div children="h-32 flex" key={link.size}>
-                  <img
-                    className="rounded-2xl w-full object-cover position-center"
-                    src={"http://localhost:4000/uploads/" + link}
-                    alt=""
-                  />
-                </div>
-              ))}
-            <label className=" h-32 cursor-pointer flex items-center gap-1 border bg-transparent rounded-2xl p-8 text-2xl text-gray-600">
-              <input
-                type="file"
-                multiple
-                className="hidden"
-                onChange={uploadPhoto}
-              />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2.0}
-                stroke="currentColor"
-                className="w-8 h-8"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"
-                />
-              </svg>
-              Upload
-            </label>
-          </div>
+          {preInput("Photos", "more = better")}
+          {<PhotosUploader photos={photos} linkPhoto={linkPhoto} />}
           {preInput("Description", "Description of the place")}
           <textarea
             value={desc}

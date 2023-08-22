@@ -130,6 +130,9 @@ app.post("/upload", photosMiddlewarMulter.array("photos", 100), (req, res) => {
   }
 });
 
+app.post("/places", (req, res) => {
+  res.json(req.body);
+});
 const port = 4000;
 app.listen(port, async () => {
   await connectDB(process.env.MONGO_URI);

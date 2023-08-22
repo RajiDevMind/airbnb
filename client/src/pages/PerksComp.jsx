@@ -1,4 +1,17 @@
-const PerksComp = ({ select, onChange }) => {
+const PerksComp = ({ selected, onChange }) => {
+  const handleCheckbox = (e) => {
+    const { checked, name } = e.target;
+    // console.log(checked);
+    if (checked) {
+      onChange([...selected, name]);
+    } else {
+      onChange([
+        ...selected.filter((selectedName) => selectedName !== selectedName),
+      ]);
+    }
+    console.log(e.target.checked);
+  };
+
   const inputHeader = (text) => {
     return <h2 className="text-2xl mt-2">{text}</h2>;
   };
@@ -19,7 +32,7 @@ const PerksComp = ({ select, onChange }) => {
       {preInput("Perks", "Select all the perks for your place")}
       <div className="grid mt-2 gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-          <input type="checkbox" />
+          <input type="checkbox" name={"wifi"} onChange={handleCheckbox} />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -38,7 +51,7 @@ const PerksComp = ({ select, onChange }) => {
         </label>
 
         <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-          <input type="checkbox" />
+          <input type="checkbox" name={"Tv"} onChange={handleCheckbox} />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -57,7 +70,7 @@ const PerksComp = ({ select, onChange }) => {
         </label>
 
         <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-          <input type="checkbox" />
+          <input type="checkbox" name={"radio"} onChange={handleCheckbox} />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -76,7 +89,11 @@ const PerksComp = ({ select, onChange }) => {
         </label>
 
         <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            name={"parking space"}
+            onChange={handleCheckbox}
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -95,7 +112,7 @@ const PerksComp = ({ select, onChange }) => {
         </label>
 
         <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-          <input type="checkbox" />
+          <input type="checkbox" name={"washer"} onChange={handleCheckbox} />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -115,7 +132,11 @@ const PerksComp = ({ select, onChange }) => {
         </label>
 
         <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            name={"air-conditioning"}
+            onChange={handleCheckbox}
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

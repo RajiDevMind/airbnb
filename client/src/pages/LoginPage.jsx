@@ -28,6 +28,7 @@ const LoginPage = () => {
       }
     } catch (e) {
       alert(e, "Login failed!");
+      console.log(e, "Login failed!");
     }
   };
 
