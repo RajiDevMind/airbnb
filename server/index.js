@@ -12,6 +12,7 @@ const photosMiddlewarMulter = multer({ dest: "uploads/" });
 
 const connectDB = require("./models/connectDB");
 const User = require("./models/Users");
+const Place = require("./models/Place");
 
 // hashing users password
 const bcryptSalt = bcrypt.genSaltSync(12);
@@ -78,7 +79,6 @@ app.get("/profile", async (req, res) => {
     try {
       const userData = jwt.verify(token, jwtSecret);
       const user = await User.findById(userData.id);
-      console.log(user.id);
       if (user) {
         const { name, email, _id } = user;
         res.json({ name, email, _id });
@@ -97,7 +97,6 @@ app.post("/logout", (req, res) => {
   res.cookie("token", "").json(true);
 });
 
-// console.log({ __dirname });
 app.post("/upload-by-link", async (req, res) => {
   try {
     const { link } = req.body;
@@ -130,9 +129,43 @@ app.post("/upload", photosMiddlewarMulter.array("photos", 100), (req, res) => {
   }
 });
 
-app.post("/places", (req, res) => {
-  res.json(req.body);
+app.post("/places", async (req, res) => {
+  const { token } = req.cookies;
+  const {
+    title,
+    address,
+    photos,
+    desc,
+    perks,
+    extraInfo,
+    checkIn,
+    checkOut,
+    maxGuests,
+  } = req.body;
+  if (token) {
+    try {
+      const userData = jwt.verify(token, jwtSecret);
+      const places = await Place.create({
+        owner: userData.id,
+        title,
+        address,
+        photos,
+        desc,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+      });
+      res.status(200).json(places);
+    } catch (err) {
+      res.json(err, "Unable to create!!!");
+    }
+  } else {
+    res.json("Token not found");
+  }
 });
+
 const port = 4000;
 app.listen(port, async () => {
   await connectDB(process.env.MONGO_URI);

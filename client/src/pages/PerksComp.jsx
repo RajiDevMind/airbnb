@@ -1,7 +1,7 @@
 const PerksComp = ({ selected, onChange }) => {
   const handleCheckbox = (e) => {
     const { checked, name } = e.target;
-    // console.log(checked);
+
     if (checked) {
       onChange([...selected, name]);
     } else {
