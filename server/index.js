@@ -44,8 +44,7 @@ app.post("/register", async (req, res) => {
     });
     res.json(userDoc);
   } catch (e) {
-    res.status(422).json(e);
-    console.log("Unprocessable Entity, Registration failed!");
+    res.status(422).json(e, "Unprocessable Entity, Registration failed!");
   }
 });
 
@@ -107,7 +106,7 @@ app.post("/upload-by-link", async (req, res) => {
     });
     res.json(newName);
   } catch (err) {
-    console.log(err);
+    res.json(err);
   }
 });
 
@@ -125,31 +124,31 @@ app.post("/upload", photosMiddlewarMulter.array("photos", 100), (req, res) => {
 
     res.json(uploadedFiles);
   } catch (err) {
-    console.log("Error in file upload. Try again!!!");
+    res.json("Error in file upload. Try again!!!");
   }
 });
 
 app.post("/places", async (req, res) => {
   const { token } = req.cookies;
-  const {
-    title,
-    address,
-    photos,
-    desc,
-    perks,
-    extraInfo,
-    checkIn,
-    checkOut,
-    maxGuests,
-  } = req.body;
   if (token) {
+    const {
+      title,
+      address,
+      photo,
+      desc,
+      perks,
+      extraInfo,
+      checkIn,
+      checkOut,
+      maxGuests,
+    } = req.body;
     try {
       const userData = jwt.verify(token, jwtSecret);
-      const places = await Place.create({
+      const placesDoc = await Place.create({
         owner: userData.id,
         title,
         address,
-        photos,
+        photo,
         desc,
         perks,
         extraInfo,
@@ -157,12 +156,28 @@ app.post("/places", async (req, res) => {
         checkOut,
         maxGuests,
       });
-      res.status(200).json(places);
+      res.status(200).json(placesDoc);
     } catch (err) {
       res.json(err, "Unable to create!!!");
     }
   } else {
     res.json("Token not found");
+  }
+});
+
+app.get("/places", async (req, res) => {
+  const { token } = req.cookies;
+  const userData = jwt.verify(token, jwtSecret);
+  try {
+    if (userData) {
+      const { id } = userData;
+      const userDoc = await Place.find({ owner: id });
+      res.json(userDoc);
+    } else {
+      res.json("user id not found");
+    }
+  } catch (err) {
+    res.json(err, "unknown errors");
   }
 });
 
