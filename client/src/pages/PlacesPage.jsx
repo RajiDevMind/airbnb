@@ -36,7 +36,7 @@ const PlacesPage = () => {
           </svg>
           Add new place
         </Link>
-        <div key={places.id} className="mt-4">
+        <div key={places.data} className="mt-4">
           {places.length > 0 &&
             places.map((place) => (
               <div key={place.id}>

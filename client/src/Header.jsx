@@ -5,6 +5,8 @@ import { UserContext } from "./UserContext";
 const Header = () => {
   const { user } = useContext(UserContext);
 
+  const name = user?.name;
+
   return (
     <div>
       <header className="flex items-center justify-between">
@@ -43,7 +45,7 @@ const Header = () => {
           </button>
         </div>
         <Link
-          to={user ? "/account" : "/login"}
+          to={name ? "/account" : "/login"}
           className="flex items-center gap-5 border border-grey-300 rounded-full py-2 px-6"
         >
           <svg
@@ -74,7 +76,7 @@ const Header = () => {
               />
             </svg>
           </div>
-          {!!user && <div>{user.name}</div>}
+          {!!name && <div>{user.name}</div>}
         </Link>
       </header>
       <hr className="mt-2" />

@@ -3,7 +3,7 @@ import axios from "axios";
 export const UserContext = createContext({});
 
 export const UserContextProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

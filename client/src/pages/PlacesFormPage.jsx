@@ -8,6 +8,7 @@ import { Navigate, useParams } from "react-router-dom";
 const PlacesFormPage = () => {
   const { id } = useParams();
   console.log({ id });
+
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
 
@@ -23,10 +24,10 @@ const PlacesFormPage = () => {
 
   useEffect(() => {
     if (!id) {
-      return myId;
+      return;
     }
     axios.get("/places/" + id, { withCredentials: true });
-  }, []);
+  }, [id]);
 
   const inputHeader = (text) => {
     return <h2 className="text-2xl mt-2">{text}</h2>;
