@@ -39,10 +39,10 @@ const PlacesPage = () => {
         <div key={places.data} className="mt-4">
           {places.length > 0 &&
             places.map((place) => (
-              <div key={place.id}>
+              <div key={place._id}>
                 <Link
-                  to={"/account/places/" + places.id}
-                  key={place.id}
+                  to={"/account/places/" + place._id}
+                  key={place._id}
                   className="cursor-pointer flex gap-4 text-2xl bg-gray-200 p-4 rounded-2xl"
                 >
                   <div className="w-32 h-32 bg-gray-100 shrink-0">

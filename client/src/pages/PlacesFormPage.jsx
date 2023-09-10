@@ -7,7 +7,6 @@ import { Navigate, useParams } from "react-router-dom";
 
 const PlacesFormPage = () => {
   const { id } = useParams();
-  console.log({ id });
 
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
@@ -26,7 +25,18 @@ const PlacesFormPage = () => {
     if (!id) {
       return;
     }
-    axios.get("/places/" + id, { withCredentials: true });
+    axios.get("/places/" + id, { withCredentials: true }).then((response) => {
+      const { data } = response;
+      setTitle(data.title);
+      setAddress(data.address);
+      setPhoto(data.photos);
+      setDesc(data.desc);
+      setPerks(data.perks);
+      setExtraInfo(data.extraInfo);
+      setCheckIn(data.checkIn);
+      setCheckOut(data.checkOut);
+      setMaxGuests(data.maxGuests);
+    });
   }, [id]);
 
   const inputHeader = (text) => {
@@ -58,8 +68,8 @@ const PlacesFormPage = () => {
       maxGuests,
     };
     await axios.post("/places", placeData, { withCredentials: true });
-    // alert("Successfully set your place");
     setRedirect(true);
+    alert("Your place Successfully ");
   };
 
   if (redirect) {
