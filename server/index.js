@@ -181,6 +181,21 @@ app.get("/places", async (req, res) => {
   }
 });
 
+app.get("/places/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const place = await Place.findById(id);
+    if (!place) {
+      return res.status(404).json({ err: "Place not found!" });
+    }
+    res.json(place);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Internal server error(database connection err)!" });
+  }
+});
+
 const port = 4000;
 app.listen(port, async () => {
   await connectDB(process.env.MONGO_URI);
